@@ -272,7 +272,7 @@ sequenceDiagram
 ### 1.3.2 核心流程时序图
 
 ```mermaid
-flowchart sequential
+flowchart TD
     subgraph Phase1["阶段一：请求接收"]
         A1["Tomcat接收HTTP请求"]
         A2["Filter链处理"]

@@ -400,13 +400,13 @@ flowchart TD
     B --> C[super.afterPropertiesSet]
     C --> D[registerHandlerMethods扫描所有Bean]
     D --> E[遍历所有候选Bean]
-    E --> F{Bean类型是否标注@Controller?}
-    F -->|否| G{Bean类型是否标注@RestController?}
-    F -->|是| H[获取类级别的@RequestMapping]
+    E --> F{"Bean类型是否标注@Controller?"}
+    F -->|否| G{"Bean类型是否标注@RestController?"}
+    F -->|是| H["获取类级别的@RequestMapping"]
     G -->|是| H
     G -->|否| I[跳过该Bean]
     H --> J[遍历Bean中的所有方法]
-    J --> K{方法是否标注@RequestMapping?}
+    J --> K{"方法是否标注@RequestMapping?"}
     K -->|是| L[解析RequestMappingInfo]
     K -->|否| M[检查下一个方法]
     L --> N[创建HandlerMethod]

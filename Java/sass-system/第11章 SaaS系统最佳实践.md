@@ -3177,7 +3177,7 @@ flowchart LR
 ### 8.4 多级缓存架构
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#3B82F6', 'primaryTextColor': '#1F2937', 'primaryBorderColor': '#1D4ED8', 'lineColor': '#6B7280', 'secondaryColor': '#DBEAFE', 'tertiaryColor': '#FFFFFF', 'background': '#FFFFFF', 'mainBkg': '#F9FAFB', 'nodeBorder': '#3B82F6', 'clusterBkg': '#F3F4F6', 'titleColor': '#111827', 'edgeLabelBackground': '#FFFFFF', 'nodeTextColor': '#1F2937'}}}%%
+%%{init: {"theme": "base", "themeVariables": { "primaryColor": "#3B82F6", "primaryTextColor": "#1F2937", "primaryBorderColor": "#1D4ED8", "lineColor": "#6B7280", "secondaryColor": "#DBEAFE", "tertiaryColor": "#FFFFFF", "background": "#FFFFFF", "mainBkg": "#F9FAFB", "nodeBorder": "#3B82F6", "clusterBkg": "#F3F4F6", "titleColor": "#111827", "edgeLabelBackground": "#FFFFFF", "nodeTextColor": "#1F2937"}}}%%
 flowchart TD
     subgraph "客户端"
         Browser["浏览器"]
@@ -3201,6 +3201,10 @@ flowchart TD
     subgraph "数据库层"
         Database["数据库"]
     end
+
+    %% 将原本的 Note over 替换为独立的注释节点
+    Note1["进程内 / TTL 5分钟"]
+    Note2["分布式 / TTL 1小时"]
     
     Browser --> CDN
     Browser --> AppServer
@@ -3208,9 +3212,14 @@ flowchart TD
     AppServer --> L1_Cache
     L1_Cache -.-> Redis
     Redis -.-> Database
-    
-    Note over L1_Cache: "进程内 / TTL 5分钟"
-    Note over Redis: "分布式 / TTL 1小时"
+
+    %% 让注释节点依附在对应的缓存节点旁边
+    L1_Cache --- Note1
+    Redis --- Note2
+
+    %% 隐藏注释节点的边框和背景，使其看起来像纯文字备注
+    style Note1 fill:none,stroke:none,color:#666,font-size:12px
+    style Note2 fill:none,stroke:none,color:#666,font-size:12px
 ```
 
 ### 8.5 监控告警体系

@@ -1,4 +1,4 @@
-# Chapter 9: Spring Boot 集成 RocketMQ
+# 第9章-Spring Boot 集成 RocketMQ
 
 ## 9.1 环境配置
 

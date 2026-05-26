@@ -719,32 +719,6 @@ chain = LLMChain(
 ### 9.7.1 Callback 事件流程图
 
 ```mermaid
-%%{
-init: {
-    theme: 'base',
-    themeVariables: {
-        primaryColor: '#E3F2FD',
-        primaryTextColor: '#0D47A1',
-        primaryBorderColor: '#1976D2',
-        lineColor: '#424242',
-        secondaryColor: '#F3E5F5',
-        tertiaryColor: '#E8F5E9',
-        backgroundColor: '#FFFFFF',
-        mainBkg: '#FAFAFA',
-        nodeBorder: '#1976D2',
-        clusterBkg: '#FAFAFA',
-        clusterBorder: '#90CAF9',
-        titleColor: '#0D47A1',
-        edgeLabelBackground: '#FFFFFF'
-    }
-}%%
-
-classDef startNode fill:#E3F2FD,stroke:#1976D2,color:#0D47A1
-classDef processNode fill:#BBDEFB,stroke:#1976D2,color:#0D47A1
-classDef eventNode fill:#E8F5E9,stroke:#1976D2,color:#0D47A1
-classDef decisionNode fill:#F3E5F5,stroke:#1976D2,color:#0D47A1
-classDef endNode fill:#FFCCBC,stroke:#1976D2,color:#0D47A1
-
 graph TD
     A["开始请求"] --> B{"选择组件类型"}
     B -->|"LLM"| C["on_llm_start"]
@@ -783,30 +757,6 @@ graph TD
 ### 9.7.2 Agent 执行流程中的 Callback 事件
 
 ```mermaid
-%%{
-init: {
-    theme: 'base',
-    themeVariables: {
-        primaryColor: '#E3F2FD',
-        primaryTextColor: '#0D47A1',
-        primaryBorderColor: '#1976D2',
-        lineColor: '#424242',
-        secondaryColor: '#F3E5F5',
-        tertiaryColor: '#E8F5E9',
-        backgroundColor: '#FFFFFF',
-        mainBkg: '#FAFAFA',
-        nodeBorder: '#1976D2',
-        clusterBkg: '#FAFAFA',
-        clusterBorder: '#90CAF9',
-        titleColor: '#0D47A1',
-        edgeLabelBackground: '#FFFFFF'
-    }
-}%%
-
-classDef participant fill:#E3F2FD,stroke:#1976D2,color:#0D47A1
-classDef callbackEvent fill:#E8F5E9,stroke:#1976D2,color:#0D47A1
-classDef note fill:#F3E5F5,stroke:#90CAF9,color:#0D47A1
-
 sequenceDiagram
     participant User as "用户"
     participant Agent as "Agent"
@@ -840,39 +790,12 @@ sequenceDiagram
 
     Agent->>CB: "on_chain_end"
     Agent-->>User: "返回结果"
-
-    class User,Agent,LLM,Tool participant
-    class CB callbackEvent
 ```
 
 ### 9.7.3 Chain 执行流程
 
 ```mermaid
-%%{
-init: {
-    theme: 'base',
-    themeVariables: {
-        primaryColor: '#E3F2FD',
-        primaryTextColor: '#0D47A1',
-        primaryBorderColor: '#1976D2',
-        lineColor: '#424242',
-        secondaryColor: '#F3E5F5',
-        tertiaryColor: '#E8F5E9',
-        backgroundColor: '#FFFFFF',
-        mainBkg: '#FAFAFA',
-        nodeBorder: '#1976D2',
-        clusterBkg: '#FAFAFA',
-        clusterBorder: '#90CAF9',
-        titleColor: '#0D47A1',
-        edgeLabelBackground: '#FFFFFF'
-    }
-}%%
 
-classDef inputNode fill:#E3F2FD,stroke:#1976D2,color:#0D47A1
-classDef processNode fill:#BBDEFB,stroke:#1976D2,color:#0D47A1
-classDef decisionNode fill:#F3E5F5,stroke:#1976D2,color:#0D47A1
-classDef toolNode fill:#E8F5E9,stroke:#1976D2,color:#0D47A1
-classDef outputNode fill:#FFCCBC,stroke:#1976D2,color:#0D47A1
 
 graph LR
     A["输入"] --> B["Prompt Template"]
