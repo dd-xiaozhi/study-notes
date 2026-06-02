@@ -649,9 +649,9 @@ flowchart TB
 
     subgraph "提示词构建"
         direction LR
-        SYS[系统提示<br/>你是专业的...助手]
-        CTX["上下文:\n1. {doc1}\n2. {doc2}\n3. {doc3}"]
-        Q[问题: {user_query}]
+        SYS["系统提示<br>你是专业的...助手"]
+        CTX["上下文:<br>1. {doc1}<br>2. {doc2}<br>3. {doc3}"]
+        Q["问题: {user_query}"]
     end
 
     USR --> Q

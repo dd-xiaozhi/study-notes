@@ -506,39 +506,20 @@ AgentExecutor 是 LangChain 中负责执行 Agent 决策的核心引擎。它管
 ### 详细工作流程
 
 ```mermaid
-%%{
-init: {
-    theme: 'base',
-    themeVariables: {
-        primaryColor: '#E3F2FD',
-        primaryTextColor: '#0D47A1',
-        primaryBorderColor: '#1976D2',
-        lineColor: '#424242',
-        secondaryColor: '#F3E5F5',
-        tertiaryColor: '#E8F5E9',
-        backgroundColor: '#FFFFFF',
-        mainBkg: '#FAFAFA',
-        nodeBorder: '#1976D2',
-        clusterBkg: '#FAFAFA',
-        clusterBorder: '#90CAF9',
-        titleColor: '#0D47A1',
-        edgeLabelBackground: '#FFFFFF'
-    }
-}%%
-classDef model fill:#E3F2FD,stroke:#1976D2,color:#0D47A1
-
 flowchart TD
-    A["开始: 输入问题"] --> B["创建 AgentExecutor"]
-    B --> C{"检查迭代次数\n< max_iterations?"}
-    C -->|"是"| D["Agent 生成思考和行动"]
-    D --> E["提取工具和参数"]
-    E --> F["执行工具调用"]
-    F --> G["获取工具返回结果"]
-    G --> H{"检查结果\n是最终答案?"}
-    H -->|"否"| I["更新中间步骤到记忆"]
+    A["开始: 输入问题"]:::model --> B["创建 AgentExecutor"]:::model
+    B --> C{"检查迭代次数<br>max_iterations?"}:::model
+    C -->|"是"| D["Agent 生成思考和行动"]:::model
+    D --> E["提取工具和参数"]:::model
+    E --> F["执行工具调用"]:::model
+    F --> G["获取工具返回结果"]:::model
+    G --> H{"检查结果<br>是最终答案?"}:::model
+    H -->|"否"| I["更新中间步骤到记忆"]:::model
     I --> C
-    H -->|"是"| J["返回最终答案"]
+    H -->|"是"| J["返回最终答案"]:::model
     C -->|"否"| J
+
+    classDef model fill:#E3F2FD,stroke:#1976D2,color:#0D47A1;
 ```
 
 ### AgentExecutor 源码解析
@@ -627,26 +608,6 @@ for step in result["intermediate_steps"]:
 ### 完整决策流程图
 
 ```mermaid
-%%{
-init: {
-    theme: 'base',
-    themeVariables: {
-        primaryColor: '#E3F2FD',
-        primaryTextColor: '#0D47A1',
-        primaryBorderColor: '#1976D2',
-        lineColor: '#424242',
-        secondaryColor: '#F3E5F5',
-        tertiaryColor: '#E8F5E9',
-        backgroundColor: '#FFFFFF',
-        mainBkg: '#FAFAFA',
-        nodeBorder: '#1976D2',
-        clusterBkg: '#FAFAFA',
-        clusterBorder: '#90CAF9',
-        titleColor: '#0D47A1',
-        edgeLabelBackground: '#FFFFFF'
-    }
-}%%
-classDef model fill:#E3F2FD,stroke:#1976D2,color:#0D47A1
 
 flowchart TD
     subgraph "初始化阶段"
@@ -684,27 +645,6 @@ flowchart TD
 ### 思考-行动循环详解
 
 ```mermaid
-%%{
-init: {
-    theme: 'base',
-    themeVariables: {
-        primaryColor: '#E3F2FD',
-        primaryTextColor: '#0D47A1',
-        primaryBorderColor: '#1976D2',
-        lineColor: '#424242',
-        secondaryColor: '#F3E5F5',
-        tertiaryColor: '#E8F5E9',
-        backgroundColor: '#FFFFFF',
-        mainBkg: '#FAFAFA',
-        nodeBorder: '#1976D2',
-        clusterBkg: '#FAFAFA',
-        clusterBorder: '#90CAF9',
-        titleColor: '#0D47A1',
-        edgeLabelBackground: '#FFFFFF'
-    }
-}%%
-classDef model fill:#E3F2FD,stroke:#1976D2,color:#0D47A1
-
 sequenceDiagram
     participant User as "用户"
     participant Agent as "Agent (LLM)"
@@ -738,27 +678,6 @@ sequenceDiagram
 ### 工具选择决策过程
 
 ```mermaid
-%%{
-init: {
-    theme: 'base',
-    themeVariables: {
-        primaryColor: '#E3F2FD',
-        primaryTextColor: '#0D47A1',
-        primaryBorderColor: '#1976D2',
-        lineColor: '#424242',
-        secondaryColor: '#F3E5F5',
-        tertiaryColor: '#E8F5E9',
-        backgroundColor: '#FFFFFF',
-        mainBkg: '#FAFAFA',
-        nodeBorder: '#1976D2',
-        clusterBkg: '#FAFAFA',
-        clusterBorder: '#90CAF9',
-        titleColor: '#0D47A1',
-        edgeLabelBackground: '#FFFFFF'
-    }
-}%%
-classDef model fill:#E3F2FD,stroke:#1976D2,color:#0D47A1
-
 flowchart TD
     A["问题分析"] --> B{"问题类型判断"}
 
