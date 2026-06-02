@@ -360,14 +360,6 @@ flowchart TD
     B5 --> C5["以非事务执行<br/>挂起当前事务"]
     B6 --> C6["支持当前事务<br/>无事务则异常"]
     B7 --> C7["以非事务执行<br/>有事务则异常"]
-    
-    style C1 fill:#90EE90
-    style C2 fill:#87CEEB
-    style C3 fill:#DDA0DD
-    style C4 fill:#F0E68C
-    style C5 fill:#D3D3D3
-    style C6 fill:#FFA07A
-    style C7 fill:#FFB6C1
 ```
 
 ### 8.3.2 场景示例和流程图
@@ -988,8 +980,6 @@ flowchart LR
         D[客户端] -->|通过代理| E[UserService.addUser]
         E -->|直接调用| F[doSomeOtherThing]
     end
-    
-    style F fill:#FFB6C1
 ```
 
 **解决方案**：

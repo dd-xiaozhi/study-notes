@@ -1411,8 +1411,8 @@ public class PerformanceAspect {
 ```mermaid
 flowchart LR
     A["@Aspect"] --> B[定义切面]
-    B --> C[定义切点<br/>@Pointcut]
-    C --> D[定义通知<br/>@Before/@After等]
+    B --> C["定义切点<br/>@Pointcut"]
+    C --> D["定义通知<br/>@Before/@After等"]
 
     style A fill:#ff9999,color:#333
     style B fill:#99ff99,color:#333

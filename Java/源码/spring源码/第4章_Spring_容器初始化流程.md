@@ -33,11 +33,11 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-    A[ApplicationContext 创建] --> B[refresh() 调用]
+    A[ApplicationContext 创建] --> B["refresh() 调用"]
     B --> C[容器的初始化与配置]
     C --> D[容器就绪]
     
-    subgraph refresh() 内部流程
+    subgraph "refresh() 内部流程"
         E[prepareRefresh]
         F[obtainFreshBeanFactory]
         G[prepareBeanFactory]

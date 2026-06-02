@@ -711,18 +711,41 @@ classDiagram
 
 ```mermaid
 graph LR
-    A["第1阶段<br/>宏观认识"] --> B["第2阶段<br/>IoC 容器"]
-    B --> C["第3阶段<br/>Bean 生命周期"]
-    C --> D["第4阶段<br/>AOP 原理"]
-    D --> E["第5阶段<br/>事务管理"]
-    E --> F["第6阶段<br/>Web 层"]
+    subgraph 第1阶段["第1阶段：宏观认识"]
+        direction TB
+        A1[整体架构<br/>模块关系]
+    end
 
-    A : 整体架构<br/>模块关系
-    B : BeanFactory<br/>ApplicationContext
-    C : 创建-初始化<br/>销毁全过程
-    D : 代理创建<br/>拦截机制
-    E : 事务传播<br/>隔离级别
-    F : 请求处理<br/>视图解析
+    subgraph 第2阶段["第2阶段：IoC 容器"]
+        direction TB
+        B1[BeanFactory<br/>ApplicationContext]
+    end
+
+    subgraph 第3阶段["第3阶段：Bean 生命周期"]
+        direction TB
+        C1[创建-初始化<br/>销毁全过程]
+    end
+
+    subgraph 第4阶段["第4阶段：AOP 原理"]
+        direction TB
+        D1[代理创建<br/>拦截机制]
+    end
+
+    subgraph 第5阶段["第5阶段：事务管理"]
+        direction TB
+        E1[事务传播<br/>隔离级别]
+    end
+
+    subgraph 第6阶段["第6阶段：Web 层"]
+        direction TB
+        F1[请求处理<br/>视图解析]
+    end
+
+    A1 --> B1
+    B1 --> C1
+    C1 --> D1
+    D1 --> E1
+    E1 --> F1
 ```
 
 **推荐的学习方法**：

@@ -773,12 +773,12 @@ protected Object initializeBean(String beanName, Object bean,
 ```mermaid
 sequenceDiagram
     participant Factory as DisposableBeanAdapter
-    participant Destroy as 销毁方法
+    participant DestroyMethod as 销毁方法
     
-    Factory->>Destroy: destroy()
-    Destroy->>Destroy: @PreDestroy 方法
-    Destroy->>Destroy: DisposableBean.destroy()
-    Destroy->>Destroy: destroy-method
+    Factory->>DestroyMethod: "destroy()"
+    DestroyMethod->>DestroyMethod: "@PreDestroy 方法"
+    DestroyMethod->>DestroyMethod: "DisposableBean.destroy()"
+    DestroyMethod->>DestroyMethod: "destroy-method"
 ```
 
 ### 3.3.3 Aware 接口详解
@@ -820,10 +820,6 @@ private void invokeAwareMethods(final String beanName, final Object bean) {
 flowchart LR
     A[1. @PostConstruct] --> B[2. afterPropertiesSet]
     B --> C[3. init-method]
-    
-    style A fill:#90EE90
-    style B fill:#87CEEB
-    style C fill:#FFA500
 ```
 
 **源码位置**：`AbstractAutowireCapableBeanFactory.java` 第 720-780 行
@@ -855,10 +851,6 @@ protected void invokeInitMethods(String beanName, Object bean,
 flowchart LR
     A[1. @PreDestroy] --> B[2. DisposableBean.destroy]
     B --> C[3. destroy-method]
-    
-    style A fill:#FFB6C1
-    style B fill:#DDA0DD
-    style C fill:#F0E68C
 ```
 
 ---

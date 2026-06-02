@@ -658,11 +658,11 @@ flowchart TB
     
     D -->|是| E[异常被谁捕获]
     
-    E --> F{Controller内部@ExceptionHandler}
-    F -->|找到| G[调用@ExceptionHandler方法]
-    F -->|未找到| H{全局@ExceptionHandler}
+    E --> F{Controller内部ExceptionHandler}
+    F -->|找到| G[调用ExceptionHandler方法]
+    F -->|未找到| H{全局ExceptionHandler}
     
-    H -->|找到| I[调用@ExceptionHandler方法]
+    H -->|找到| I[调用ExceptionHandler方法]
     H -->|未找到| J{DefaultHandlerExceptionResolver}
     
     J -->|找到匹配| K[返回标准HTTP错误]
@@ -881,7 +881,7 @@ public class SpecificExceptionHandler {
 
 ```mermaid
 flowchart BT
-    A[异常发生时] --> B{匹配哪个@ExceptionHandler}
+    A[异常发生时] --> B{匹配哪个ExceptionHandler}
     
     B --> C[精确匹配异常类型]
     C --> D{是否有精确匹配}

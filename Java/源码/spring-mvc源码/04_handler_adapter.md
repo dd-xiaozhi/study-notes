@@ -925,8 +925,8 @@ flowchart TD
     B -->|否| D[抛出异常]
 
     C --> E[RequestMappingHandlerExceptionResolver]
-    E --> F{@ExceptionHandler方法?}
-    F -->|是| G[调用@ExceptionHandler方法]
+    E --> F{ExceptionHandler方法?}
+    F -->|是| G[调用ExceptionHandler方法]
     G --> H[返回ModelAndView或响应]
     F -->|否| I[其他异常处理逻辑]
 

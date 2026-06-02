@@ -119,12 +119,6 @@ sequenceDiagram
         FeedSvc->>RankCache: 写入缓存（TTL=5min）
     end
     FeedSvc-->>Client: 返回一批视频（5-10条）
-
-    style Client fill:#fff3cd,stroke:#e0a800,color:#5a4500
-    style FeedSvc fill:#e7f1ff,stroke:#2563eb,color:#1e3a8a
-    style RankCache fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
-    style RecEngine fill:#fde7f3,stroke:#c2185b,color:#880e4f
-    style FeatureStore fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
 ```
 
 **关键设计点**：
@@ -220,11 +214,6 @@ sequenceDiagram
 
     User->>Client: 上滑到 V7、V8、V9...
     Client->>Client: 播放 V9（已预取）<br/>体验流畅无等待
-
-    style User fill:#fff3cd,stroke:#e0a800,color:#5a4500
-    style Client fill:#e7f1ff,stroke:#2563eb,color:#1e3a8a
-    style FeedSvc fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
-    style Cache fill:#f3e5f5,stroke:#7b1fa2,color:#4a148c
 ```
 
 ### 11.3.3 动态预取数量：感知网络质量

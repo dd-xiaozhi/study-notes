@@ -780,7 +780,7 @@ flowchart TD
     D --> I[输出示例：机器学习是...<br/>措辞略有变化]
     E --> J[输出示例：机器学习指...<br/>结构多样]
     F --> K[输出示例：机器学习涉及...<br/>可能包含意外观点]
-    G --> L[输出示例：[可能不相关的内容]]
+    G --> L[输出示例：可能不相关的内容]
 ```
 
 #### RAG场景下的温度设置建议
@@ -865,8 +865,8 @@ flowchart LR
     I --> J[从这组Token中采样]
     J --> K[输出]
 
-    style D fill:#ff9999
-    style H fill:#99ccff
+    style D fill:#ff9988
+    style H fill:#99c888
 ```
 
 #### Top-k与Top-p对比

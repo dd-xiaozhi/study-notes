@@ -26,13 +26,13 @@ flowchart TB
         ExceptionResolver[ExceptionResolver]
     end
 
-    subgraph Controller["控制器层"]
+    subgraph ControllerLayer["控制器层"]
         Controller[Controller]
         Interceptor[HandlerInterceptor]
     end
 
-    subgraph View["视图层"]
-        View[View]
+    subgraph ViewLayer["视图层"]
+        ViewNode[View]
         TemplateEngine[模板引擎]
     end
 
@@ -46,8 +46,8 @@ flowchart TB
     Controller -->|ModelAndView| DS
     DS -->|postHandle| Interceptor
     DS -->|processDispatchResult| ViewResolver
-    ViewResolver -->|View| View
-    View -->|Render| TemplateEngine
+    ViewResolver -->|View| ViewNode
+    ViewNode -->|Render| TemplateEngine
     TemplateEngine -->|HTML| Browser
 ```
 

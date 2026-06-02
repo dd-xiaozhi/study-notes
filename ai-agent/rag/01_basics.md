@@ -311,9 +311,6 @@ flowchart TB
         Q5 --> Q6[🤖 LLM 生成<br/>Generation]
         Q6 --> Q7[✅ 最终回答]
     end
-
-    style 索引阶段 fill:#3498db,stroke:#217a9e,color:#fff
-    style 查询阶段 fill:#27ae60,stroke:#1e8449,color:#fff
 ```
 
 > **图 1-3**：RAG 工作流程总览图，包含索引阶段（离线准备）和查询阶段（在线推理）。
@@ -452,9 +449,6 @@ flowchart LR
     T2 --> EM --> V2
 
     V1 <-.->|"余弦相似度 ≈ 0.98"| SIM[高相似]
-
-    style Embedding模型 fill:#e67e22,color:#fff
-    style 向量空间 fill:#1abc9c,color:#fff
 ```
 
 ```python
@@ -535,8 +529,6 @@ flowchart LR
     EQ --> QV["[0.45, -0.12, 0.89, ...]"]
     QV --> SS[相似度搜索]
     SS --> DB[(向量数据库)]
-
-    style 查询向量化 fill:#e74c3c,stroke:#c0392b,color:#fff
 ```
 
 ```python
@@ -698,7 +690,6 @@ flowchart TB
     LLM --> RESP[✅ 生成回答<br/>包含引用来源]
 
     style LLM fill:#e74c3c,color:#fff
-    style 生成回答 fill:#27ae60,color:#fff
 ```
 
 ```python

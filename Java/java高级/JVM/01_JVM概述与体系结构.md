@@ -540,9 +540,9 @@ flowchart LR
     AJ -->|AZUL| 高性能
     MR -->|Microsoft| .NET
 
-    style HS fill:#ffccbc,stroke:#bf360c
-    style J9 fill:#b2dfdb,stroke:#004d40
-    style GR fill:#d1c4e9,stroke:#4527a0
+    style HS fill:#ffccbc,stroke:#bf380c
+    style J9 fill:#b2dfdb,stroke:#64c400
+    style GR fill:#d1c4e9,stroke:#4527a8
 ```
 
 ### 1.5.2 HotSpot JVM

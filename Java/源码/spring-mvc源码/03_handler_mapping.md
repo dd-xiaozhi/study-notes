@@ -1018,7 +1018,7 @@ void triggerAfterCompletion(HttpServletRequest request, HttpServletResponse resp
 flowchart TD
     A[DispatcherServlet初始化] --> B[初始化HandlerMappings]
     B --> C[RequestMappingHandlerMapping.afterPropertiesSet]
-    C --> D[扫描并注册@RequestMapping]
+    C --> D[扫描并注册 RequestMapping]
 
     E[请求到来: /api/users/123] --> F[遍历HandlerMappings]
     F --> G[RequestMappingHandlerMapping.getHandler]

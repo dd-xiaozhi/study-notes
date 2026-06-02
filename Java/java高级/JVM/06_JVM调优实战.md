@@ -487,7 +487,6 @@ java \
 ### 3.4 调优目标设定
 
 ```mermaid
-%%{init: {'theme': 'base'}}%%
 pie title 调优目标权重分配
     "吞吐量" : 40
     "延迟" : 35

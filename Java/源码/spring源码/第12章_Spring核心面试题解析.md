@@ -227,7 +227,7 @@ sequenceDiagram
     participant BP_Pre as BeanPostProcessor<br/>前置处理
     participant Init as 初始化方法
     participant BP_Post as BeanPostProcessor<br/>后置处理
-    participant Destroy as 销毁方法
+    participant DestroyBean as 销毁方法
 
     Container->>Bean: 1. 调用构造函数实例化
     Bean-->>Container: Bean实例
@@ -256,8 +256,8 @@ sequenceDiagram
 
     Note over Container,Bean: Bean已完全初始化，可投入使用
 
-    Container->>Destroy: 8. DisposableBean.destroy()
-    Destroy-->>Bean: 销毁处理
+    Container->>DestroyBean: 8. DisposableBean.destroy()
+    DestroyBean-->>Bean: 销毁处理
     Bean-->>Container: 销毁完成
 ```
 
@@ -745,10 +745,10 @@ public Object proceed() throws Throwable {
 
 ```mermaid
 flowchart TB
-    A["调用代理对象方法"] --> B{方法有@Transactional注解?}
+    A["调用代理对象方法"] --> B["方法有@Transactional注解?"]
     B -->|是| C["开启事务"]
     C --> D["执行业务方法"]
-    D --> E{方法正常执行?}
+    D --> E["方法正常执行?"]
     E -->|是| F["提交事务"]
     E -->|否| G["回滚事务"]
     B -->|否| H["直接执行方法"]
@@ -1215,7 +1215,7 @@ mindmap
         BeanPostProcessor
         InitializingBean
     容器初始化
-      refresh()方法
+      refresh方法
       12个步骤
       BeanFactory vs ApplicationContext
     AOP原理
@@ -1224,14 +1224,14 @@ mindmap
       选择规则
       织入时机
     事务管理
-      @Transactional原理
+      Transactional原理
       7种传播行为
       失效场景
     循环依赖
       三级缓存
       构造器不能解决
       prototype不能解决
-      @Lazy解决方案
+      Lazy解决方案
 ```
 
 ### 面试技巧总结
