@@ -17,6 +17,7 @@ study-notes/
 ├── ai-agent/                      # AI Agent
 │   ├── agentscope-java/           # AgentScope Java 开发指南
 │   ├── langchain/                 # LangChain 学习笔记
+│   ├── langgraph/                 # LangGraph 状态图、Checkpoint、多 Agent
 │   └── rag/                       # RAG 技术详解
 │
 ├── 系统设计/                       # 系统设计
@@ -25,7 +26,11 @@ study-notes/
 │   ├── 架构设计/                   # 软件架构设计原则
 │   ├── 广告投放系统设计/           # 程序化广告、RTB、召回排序、计费出价
 │   ├── 短视频平台/                 # 上传转码、CDN、推荐系统、Feed流
-│   └── sass平台系统设计/           # 多租户隔离、租户路由、订阅计费、Entitlements
+│   ├── sass平台系统设计/           # 多租户隔离、租户路由、订阅计费、Entitlements
+│   ├── 商城平台系统设计/           # 商品、订单、库存、秒杀、支付、售后
+│   ├── 供应链系统设计/             # SRM、采购、OMS、WMS、TMS、控制塔
+│   ├── ai-agent系统设计/           # 规划、记忆、工具调用、多 Agent 编排
+│   └── DDD领域驱动设计/            # 限界上下文、聚合、领域事件、CQRS
 │
 ├── 计算机基础/                     # 计算机基础
 │   ├── 核心/                      # 操作系统、计算机网络、网络协议
@@ -43,7 +48,8 @@ study-notes/
 ├── 云原生/                        # 云原生技术
 │   ├── Docker.md                  # Docker 容器化
 │   ├── k8s/                      # Kubernetes
-│   └── jenkins/                  # Jenkins CI/CD
+│   ├── jenkins/                  # Jenkins CI/CD
+│   └── cicd-study/               # CI/CD 实战：Gitea → Jenkins → ArgoCD → K8s
 │
 ├── 中间件/                        # 中间件技术
 │   ├── 消息队列/                  # 消息队列
@@ -77,10 +83,15 @@ study-notes/
 - 广告投放系统（程序化广告、RTB、召回粗排精排、计费出价、反作弊）
 - 短视频平台（上传转码、CDN 分发、推荐系统、Feed 流、直播）
 - SaaS 平台（多租户隔离模型、租户标识路由、订阅计费、RBAC/ABAC 权限、Entitlements、租户级监控）
+- 商城平台（商品中心、多级缓存、订单、库存、营销计价、秒杀、支付、售后、API 网关）
+- 供应链系统（SRM、采购、OMS、WMS、IMS、TMS、末端配送、需求预测、控制塔、跨境供应链）
+- AI Agent 系统（规划、记忆与 RAG、Tool Use 与 MCP、多 Agent 协作、评测与可观测性、生产部署）
+- DDD 领域驱动设计（限界上下文、实体/值对象/聚合、领域事件、事件风暴、分层架构、CQRS/ES）
 
 ### AI Agent
 - AgentScope Java 开发
 - LangChain 与 LLM 集成
+- LangGraph（状态管理、条件路由、Checkpoint、人机交互、多 Agent 系统）
 - RAG（检索增强生成）技术
 
 ### 计算机基础
@@ -92,6 +103,7 @@ study-notes/
 - Docker 容器化
 - Kubernetes 容器编排
 - CI/CD 持续集成与部署
+- CI/CD 实战（Gitea + Jenkins + SonarQube + 镜像仓库 + Helm + Argo CD GitOps，含多环境发布与回滚）
 
 ## 学习路线建议
 
