@@ -1,0 +1,74 @@
+# ============================================================
+# 开发环境的 Argo CD 应用定义：自动同步（Git 一变，集群就跟着变）
+# 首次使用：kubectl apply -f argocd/dev.yaml
+# ============================================================
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mysql-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: http://host.docker.internal:3000/mall/mall-deploy.git
+    targetRevision: main
+    path: infra/mysql
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mall-dev
+  syncPolicy:
+    automated:
+      prune: true      # Git 中删除的资源，集群中也删除
+      selfHeal: true   # 有人手工改了集群，自动改回 Git 中的样子
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mall-user-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: http://host.docker.internal:3000/mall/mall-deploy.git
+    targetRevision: main
+    path: charts/springboot-app
+    helm:
+      releaseName: mall-user          # 决定 Deployment/Service 的名字，也就是集群内 DNS 名
+      valueFiles:
+        - ../../envs/dev/mall-user.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mall-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mall-order-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: http://host.docker.internal:3000/mall/mall-deploy.git
+    targetRevision: main
+    path: charts/springboot-app
+    helm:
+      releaseName: mall-order
+      valueFiles:
+        - ../../envs/dev/mall-order.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mall-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

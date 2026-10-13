@@ -1,0 +1,16 @@
+# Headless Service（clusterIP: None）：StatefulSet 的标配，
+# 集群内通过 mysql:3306 即可访问到 MySQL Pod
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+spec:
+  clusterIP: None
+  selector:
+    app: mysql
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: mysql

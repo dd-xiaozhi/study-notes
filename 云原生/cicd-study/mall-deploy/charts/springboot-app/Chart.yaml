@@ -1,0 +1,6 @@
+apiVersion: v2
+name: springboot-app
+description: 通用 Spring Boot 微服务 Chart —— mall 的每个服务都用它部署，差异只体现在 values 文件里
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

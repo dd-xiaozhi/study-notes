@@ -1,0 +1,65 @@
+# ============================================================
+# 生产环境的 Argo CD 应用定义：手动同步（Git 变化后只提示 OutOfSync，需要人工点击 Sync 才会发布）
+# 首次使用：kubectl apply -f argocd/prod.yaml
+# ============================================================
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mysql-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: http://host.docker.internal:3000/mall/mall-deploy.git
+    targetRevision: main
+    path: infra/mysql
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mall-prod
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mall-user-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: http://host.docker.internal:3000/mall/mall-deploy.git
+    targetRevision: main
+    path: charts/springboot-app
+    helm:
+      releaseName: mall-user
+      valueFiles:
+        - ../../envs/prod/mall-user.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mall-prod
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mall-order-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: http://host.docker.internal:3000/mall/mall-deploy.git
+    targetRevision: main
+    path: charts/springboot-app
+    helm:
+      releaseName: mall-order
+      valueFiles:
+        - ../../envs/prod/mall-order.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mall-prod
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

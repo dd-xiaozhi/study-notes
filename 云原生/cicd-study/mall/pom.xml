@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.1.1</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.xiaozhi.mall</groupId>
+    <artifactId>mall</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>mall</name>
+    <description>CI/CD 实战练习项目：迷你商城微服务</description>
+
+    <modules>
+        <module>mall-user</module>
+        <module>mall-order</module>
+    </modules>
+
+    <properties>
+        <java.version>21</java.version>
+        <jacoco.version>0.8.14</jacoco.version>
+        <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
+        <!-- SonarQube 中的项目标识 -->
+        <sonar.projectKey>mall</sonar.projectKey>
+        <sonar.projectName>mall</sonar.projectName>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- 声明版本后即可直接执行 mvn sonar:sonar -->
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${sonar-maven-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <!-- 单元测试覆盖率：生成 target/site/jacoco/jacoco.xml，供 SonarQube 读取 -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

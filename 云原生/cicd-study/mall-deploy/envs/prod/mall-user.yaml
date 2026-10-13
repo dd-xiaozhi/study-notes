@@ -1,0 +1,31 @@
+# mall-user · 生产环境（image.tag 由"生产发布"流水线从 dev 晋升而来，请勿手工改动）
+image:
+  repository: localhost:5000/mall/mall-user
+  tag: "v1"
+
+# 生产环境 2 个副本：滚动更新和单个 Pod 故障时都不影响服务
+replicaCount: 2
+port: 8081
+
+config:
+  DB_HOST: mysql
+  DB_PORT: "3306"
+  DB_NAME: mall_user
+  DB_USERNAME: mall
+
+secretEnv:
+  - name: DB_PASSWORD
+    secretName: mysql
+    secretKey: mysql-password
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    memory: 1Gi
+
+ingress:
+  enabled: true
+  host: mall.localhost
+  path: /api/users

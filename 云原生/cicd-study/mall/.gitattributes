@@ -1,0 +1,3 @@
+# 统一使用 LF 换行：Jenkinsfile、Shell 片段、YAML 在 Linux 容器中执行，CRLF 会导致奇怪的错误
+* text=auto eol=lf
+*.jar binary

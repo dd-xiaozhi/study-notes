@@ -1,0 +1,26 @@
+# ============================================================
+# Argo CD Helm 安装参数（本地学习精简版）
+# helm install argocd argo/argo-cd -n argocd --create-namespace -f infra/k8s/argocd-values.yaml
+# ============================================================
+global:
+  # 访问域名：*.localhost 在浏览器中自动解析到 127.0.0.1，无需修改 hosts 文件
+  domain: argocd.localhost
+
+configs:
+  params:
+    # 由 Traefik 对外提供 HTTP 访问，Argo CD Server 自身不再强制 HTTPS
+    server.insecure: true
+  cm:
+    # 每 60 秒检查一次 Git 仓库变化（默认 120 秒），让实验反馈更快
+    timeout.reconciliation: 60s
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+
+# 以下组件本教程用不到，关闭以节省资源
+dex:
+  enabled: false
+notifications:
+  enabled: false

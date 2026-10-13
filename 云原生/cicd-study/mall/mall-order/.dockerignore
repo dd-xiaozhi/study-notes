@@ -1,0 +1,3 @@
+# 构建上下文只需要打好的 jar，其余文件一律不发送给 Docker 引擎（构建更快、避免泄露源码）
+*
+!target/mall-order.jar

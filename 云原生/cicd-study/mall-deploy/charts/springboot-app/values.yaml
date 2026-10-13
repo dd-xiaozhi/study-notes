@@ -1,0 +1,35 @@
+# ============================================================
+# 默认值（所有服务共享）。每个服务/环境的 values 文件只需覆盖不同的部分
+# ============================================================
+
+replicaCount: 1
+
+image:
+  repository: ""          # 必填，例如 localhost:5000/mall/mall-user
+  tag: ""                 # 必填，由 Jenkins 流水线自动更新为 Git 提交短哈希
+  pullPolicy: IfNotPresent
+
+# 应用监听端口（同时作为 Service 端口）
+port: 8080
+
+# 非敏感配置：渲染成 ConfigMap，再以环境变量形式注入容器
+config: {}
+
+# 敏感配置：从已存在的 Secret 中读取，注入为环境变量
+secretEnv: []
+#  - name: DB_PASSWORD          # 容器内的环境变量名
+#    secretName: mysql          # Secret 名称
+#    secretKey: mysql-password  # Secret 中的 key
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 384Mi
+  limits:
+    memory: 768Mi
+
+ingress:
+  enabled: false
+  className: traefik
+  host: ""
+  path: /

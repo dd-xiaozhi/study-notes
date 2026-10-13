@@ -1,0 +1,31 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: mall-user
+  # 所有连接信息都可以被环境变量覆盖（12-Factor 配置原则）：
+  # 本地开发使用冒号后的默认值；Docker / K8s 中通过环境变量注入
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3307}/${DB_NAME:mall_user}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    username: ${DB_USERNAME:mall}
+    password: ${DB_PASSWORD:mall123}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # 学习项目直接由 Hibernate 建表；生产项目建议使用 Flyway / Liquibase 管理表结构
+      ddl-auto: update
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      # 开启 /actuator/health/liveness 与 /actuator/health/readiness（K8s 环境中会自动开启，这里显式声明便于本地验证）
+      probes:
+        enabled: true
+
+app:
+  version: ${APP_VERSION:local}

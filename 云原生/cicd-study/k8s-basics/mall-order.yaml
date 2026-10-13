@@ -1,0 +1,85 @@
+# ============================================================
+# 第 9 章：手写 K8s 清单部署 mall-order（结构与 mall-user 相同）
+# kubectl apply -n mall-lab -f k8s-basics/mall-order.yaml
+# ============================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mall-order
+data:
+  DB_HOST: mysql
+  DB_PORT: "3306"
+  DB_NAME: mall_order
+  DB_USERNAME: mall
+  USER_SERVICE_URL: http://mall-user:8081   # 通过 Service 名访问用户服务
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mall-order
+  labels:
+    app: mall-order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mall-order
+  template:
+    metadata:
+      labels:
+        app: mall-order
+    spec:
+      containers:
+        - name: app
+          image: localhost:5000/mall/mall-order:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8082
+          env:
+            - name: APP_VERSION
+              value: "v1"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: mysql-password
+          envFrom:
+            - configMapRef:
+                name: mall-order
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 5
+            failureThreshold: 36
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 384Mi
+            limits:
+              memory: 768Mi
+---
+# 类型为 LoadBalancer：Docker Desktop 会把它暴露到 Windows 的 localhost:8082
+apiVersion: v1
+kind: Service
+metadata:
+  name: mall-order
+spec:
+  type: LoadBalancer
+  selector:
+    app: mall-order
+  ports:
+    - name: http
+      port: 8082
+      targetPort: http

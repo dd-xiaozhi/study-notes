@@ -1,0 +1,91 @@
+# ============================================================
+# 第 9 章：手写 K8s 清单部署 mall-user（ConfigMap + Deployment + Service）
+# kubectl apply -n mall-lab -f k8s-basics/mall-user.yaml
+# ============================================================
+
+# ① ConfigMap：非敏感配置，以环境变量形式注入容器
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mall-user
+data:
+  DB_HOST: mysql
+  DB_PORT: "3306"
+  DB_NAME: mall_user
+  DB_USERNAME: mall
+---
+# ② Deployment：声明"我要运行几个什么样的 Pod"，K8s 负责让现实与声明保持一致
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mall-user
+  labels:
+    app: mall-user
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mall-user            # 管理哪些 Pod：标签 app=mall-user 的 Pod
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:                     # Pod 模板
+    metadata:
+      labels:
+        app: mall-user
+    spec:
+      containers:
+        - name: app
+          image: localhost:5000/mall/mall-user:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8081
+          env:
+            - name: APP_VERSION
+              value: "v1"
+            - name: DB_PASSWORD           # 敏感配置从 Secret 读取
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: mysql-password
+          envFrom:
+            - configMapRef:
+                name: mall-user
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 5
+            failureThreshold: 36
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 384Mi
+            limits:
+              memory: 768Mi
+---
+# ③ Service：给一组 Pod 提供固定的访问入口和 DNS 名（mall-user），并做负载均衡
+apiVersion: v1
+kind: Service
+metadata:
+  name: mall-user
+spec:
+  selector:
+    app: mall-user
+  ports:
+    - name: http
+      port: 8081
+      targetPort: http

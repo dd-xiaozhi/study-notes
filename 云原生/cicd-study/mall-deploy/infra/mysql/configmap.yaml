@@ -1,0 +1,10 @@
+# 初始化脚本：以文件形式挂载到 /docker-entrypoint-initdb.d/，MySQL 首次启动（数据目录为空）时执行
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS mall_order DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+    GRANT ALL PRIVILEGES ON mall_order.* TO 'mall'@'%';
+    FLUSH PRIVILEGES;

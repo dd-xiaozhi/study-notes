@@ -1,0 +1,23 @@
+# mall-user · 开发环境（image.tag 由 Jenkins 流水线自动修改，请勿手工改动）
+image:
+  repository: localhost:5000/mall/mall-user
+  tag: "v1"
+
+replicaCount: 1
+port: 8081
+
+config:
+  DB_HOST: mysql
+  DB_PORT: "3306"
+  DB_NAME: mall_user
+  DB_USERNAME: mall
+
+secretEnv:
+  - name: DB_PASSWORD
+    secretName: mysql
+    secretKey: mysql-password
+
+ingress:
+  enabled: true
+  host: mall-dev.localhost
+  path: /api/users

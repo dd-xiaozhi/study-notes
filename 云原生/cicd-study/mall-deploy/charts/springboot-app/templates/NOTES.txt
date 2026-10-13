@@ -1,0 +1,8 @@
+{{ .Release.Name }} 已部署到命名空间 {{ .Release.Namespace }}，镜像 {{ .Values.image.repository }}:{{ .Values.image.tag }}
+
+查看 Pod：  kubectl get pods -n {{ .Release.Namespace }} -l app={{ .Release.Name }}
+{{- if .Values.ingress.enabled }}
+访问地址：  http://{{ .Values.ingress.host }}{{ .Values.ingress.path }}
+{{- else }}
+本地调试：  kubectl port-forward -n {{ .Release.Namespace }} svc/{{ .Release.Name }} {{ .Values.port }}:{{ .Values.port }}
+{{- end }}

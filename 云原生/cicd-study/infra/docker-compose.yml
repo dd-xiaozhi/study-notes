@@ -1,0 +1,104 @@
+# ============================================================
+# CI 基础设施：Gitea（代码托管）+ Registry（镜像仓库）+ SonarQube（代码质量）+ Jenkins（流水线）
+# 启动前置：已生成 registry/auth/htpasswd（见第 4 章）
+# 启动：docker compose up -d --build
+# ============================================================
+name: cicd
+
+services:
+  # ---------------- 代码托管 ----------------
+  gitea:
+    image: docker.gitea.com/gitea:28.1.0
+    container_name: gitea
+    restart: unless-stopped
+    environment:
+      USER_UID: "1000"
+      USER_GID: "1000"
+      GITEA__database__DB_TYPE: sqlite3
+      # 统一对外地址：浏览器、Jenkins 容器、K8s 中的 Argo CD 都能通过它访问 Gitea
+      GITEA__server__ROOT_URL: http://host.docker.internal:3000/
+      GITEA__server__HTTP_PORT: "3000"
+      GITEA__server__DISABLE_SSH: "true"
+      # 默认只允许 Webhook 发往公网地址；本地实验需要发往 Jenkins（私有地址），因此放开（⚠️ 仅限本地）
+      GITEA__webhook__ALLOWED_HOST_LIST: "*"
+    ports:
+      - "3000:3000"
+    volumes:
+      - gitea-data:/data
+
+  # ---------------- 镜像仓库 ----------------
+  registry:
+    image: registry:2
+    container_name: registry
+    restart: unless-stopped
+    environment:
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: mall-registry
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+      REGISTRY_STORAGE_DELETE_ENABLED: "true"
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./registry/auth:/auth:ro
+      - registry-data:/var/lib/registry
+
+  # ---------------- 代码质量 ----------------
+  sonar-db:
+    image: postgres:17-alpine
+    container_name: sonar-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonar
+    volumes:
+      - sonar-db-data:/var/lib/postgresql/data
+
+  sonarqube:
+    image: sonarqube:26.9.0.129388-community
+    container_name: sonarqube
+    restart: unless-stopped
+    depends_on:
+      - sonar-db
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonar-db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+      # 关闭内置 Elasticsearch 的生产环境自检（vm.max_map_count 等），本地学习环境专用
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonar-data:/opt/sonarqube/data
+      - sonar-extensions:/opt/sonarqube/extensions
+      - sonar-logs:/opt/sonarqube/logs
+
+  # ---------------- 流水线 ----------------
+  jenkins:
+    build: ./jenkins
+    image: mall-jenkins:lts
+    container_name: jenkins
+    restart: unless-stopped
+    # 以 root 运行是为了能访问挂载进来的 docker.sock（⚠️ 仅限本地学习，生产应使用独立构建节点）
+    user: root
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "8080:8080"
+    volumes:
+      - jenkins-home:/var/jenkins_home
+      # Maven 本地仓库单独持久化：重建 Jenkins 容器也不用重新下载依赖
+      - jenkins-m2:/root/.m2
+      # 把宿主机（Docker Desktop）的 Docker 引擎"借给" Jenkins：Jenkins 里执行 docker build，
+      # 镜像实际构建在 Docker Desktop 中 —— K8s 集群因此能直接用到这些镜像（原理见第 9 章）
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  gitea-data:
+  registry-data:
+  sonar-db-data:
+  sonar-data:
+  sonar-extensions:
+  sonar-logs:
+  jenkins-home:
+  jenkins-m2:

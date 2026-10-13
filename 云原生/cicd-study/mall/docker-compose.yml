@@ -1,0 +1,65 @@
+# ============================================================
+# 本地联调：一条命令启动 MySQL + mall-user + mall-order
+# 使用前先打包：mvn -B clean package -DskipTests
+# 启动：docker compose up -d --build
+# ============================================================
+name: mall
+
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: mall_user
+      MYSQL_USER: mall
+      MYSQL_PASSWORD: mall123
+      TZ: Asia/Shanghai
+    ports:
+      # 宿主机用 3307，避免与本机已安装的 MySQL(3306) 冲突
+      - "3307:3306"
+    volumes:
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  mall-user:
+    build: ./mall-user
+    image: mall/mall-user:local
+    environment:
+      DB_HOST: mysql          # 同一个 Compose 网络内，用服务名访问
+      DB_PORT: "3306"         # 容器之间走容器端口，而不是宿主机映射的 3307
+      DB_NAME: mall_user
+      DB_USERNAME: mall
+      DB_PASSWORD: mall123
+      APP_VERSION: compose
+    ports:
+      - "8081:8081"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mall-order:
+    build: ./mall-order
+    image: mall/mall-order:local
+    environment:
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_NAME: mall_order
+      DB_USERNAME: mall
+      DB_PASSWORD: mall123
+      USER_SERVICE_URL: http://mall-user:8081
+      APP_VERSION: compose
+    ports:
+      - "8082:8082"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mall-user:
+        condition: service_started
+
+volumes:
+  mysql-data:

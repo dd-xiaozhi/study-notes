@@ -1,0 +1,109 @@
+// ============================================================
+// mall 流水线（最终版）
+//   所有分支：编译 + 单元测试（CI）
+//   main 分支：+ 代码扫描 + 质量门禁 + 构建推送镜像 + 更新 GitOps 仓库（CD，由 Argo CD 部署到 dev）
+// ============================================================
+pipeline {
+    agent any
+
+    options {
+        timestamps()                                    // 日志带时间戳
+        disableConcurrentBuilds()                       // 同一分支不并发构建，避免互相覆盖镜像/配置
+        buildDiscarder(logRotator(numToKeepStr: '20'))  // 只保留最近 20 次构建记录
+    }
+
+    environment {
+        REGISTRY     = 'localhost:5000'                                  // 私有镜像仓库
+        IMAGE_PREFIX = "${REGISTRY}/mall"                                // 镜像名前缀
+        SERVICES     = 'mall-user mall-order'                            // 需要构建的服务（目录名 = 镜像名）
+        DEPLOY_REPO  = 'host.docker.internal:3000/mall/mall-deploy.git'  // GitOps 配置仓库
+    }
+
+    stages {
+        stage('准备') {
+            steps {
+                script {
+                    // 镜像 tag 使用 Git 提交短哈希：任何一个运行中的镜像都能精确追溯到源码版本
+                    env.IMAGE_TAG = sh(script: 'git rev-parse --short=7 HEAD', returnStdout: true).trim()
+                }
+                echo "分支: ${env.BRANCH_NAME}，镜像 tag: ${env.IMAGE_TAG}"
+            }
+        }
+
+        stage('编译与单元测试') {
+            steps {
+                sh 'mvn -B clean verify'
+            }
+            post {
+                always {
+                    // 收集测试报告，Jenkins 页面上可以看到测试趋势和失败用例
+                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+        stage('代码质量扫描') {
+            when { branch 'main' }   // SonarQube 社区版只支持分析一个分支
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh 'mvn -B sonar:sonar'
+                }
+            }
+        }
+
+        stage('质量门禁') {
+            when { branch 'main' }
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    // 等待 SonarQube 通过 Webhook 回调分析结果，门禁不通过则流水线失败
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+        stage('构建并推送镜像') {
+            when { branch 'main' }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'registry-cred',
+                        usernameVariable: 'REG_USER', passwordVariable: 'REG_PASS')]) {
+                    sh '''
+                        echo "$REG_PASS" | docker login "$REGISTRY" -u "$REG_USER" --password-stdin
+                        for svc in $SERVICES; do
+                            docker build -t "$IMAGE_PREFIX/$svc:$IMAGE_TAG" "$svc"
+                            docker push "$IMAGE_PREFIX/$svc:$IMAGE_TAG"
+                        done
+                    '''
+                }
+            }
+        }
+
+        stage('部署到开发环境') {
+            when { branch 'main' }
+            steps {
+                // CD 的本质：只修改 GitOps 仓库中的镜像 tag，真正的部署由 Argo CD 完成
+                withCredentials([usernamePassword(credentialsId: 'gitea-cred',
+                        usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
+                    sh '''
+                        rm -rf mall-deploy
+                        git clone "http://$GIT_USER:$GIT_TOKEN@$DEPLOY_REPO" mall-deploy
+                        cd mall-deploy
+                        for svc in $SERVICES; do
+                            yq -i '.image.tag = strenv(IMAGE_TAG)' "envs/dev/$svc.yaml"
+                        done
+                        git config user.name  "jenkins"
+                        git config user.email "jenkins@mall.local"
+                        git add envs/dev
+                        git diff --cached --quiet || git commit -m "deploy(dev): mall $IMAGE_TAG"
+                        git push origin HEAD:main
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success { echo '流水线执行成功' }
+        failure { echo '流水线执行失败，请查看上面的日志定位失败的阶段' }
+        always  { cleanWs() }   // 清理工作空间，避免下次构建受残留文件影响
+    }
+}

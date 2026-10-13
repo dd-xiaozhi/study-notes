@@ -1,0 +1,31 @@
+# mall-order · 生产环境（image.tag 由"生产发布"流水线从 dev 晋升而来，请勿手工改动）
+image:
+  repository: localhost:5000/mall/mall-order
+  tag: "v1"
+
+replicaCount: 2
+port: 8082
+
+config:
+  DB_HOST: mysql
+  DB_PORT: "3306"
+  DB_NAME: mall_order
+  DB_USERNAME: mall
+  USER_SERVICE_URL: http://mall-user:8081
+
+secretEnv:
+  - name: DB_PASSWORD
+    secretName: mysql
+    secretKey: mysql-password
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    memory: 1Gi
+
+ingress:
+  enabled: true
+  host: mall.localhost
+  path: /api/orders
